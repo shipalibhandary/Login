@@ -16,12 +16,19 @@
                     <div class="card-body p-sm-5">
                         <h2 class="fs-20 fw-bolder mb-4">Login</h2>
                         <h4 class="fs-13 fw-bold mb-2">Login to your account</h4>
+                        @if(session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
 
-
-                        <form action="{{ route('login.submit') }}" method="POST">
+                        @if(session('error'))
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+                        <form method="POST" action="{{ route('login.submit') }}" class="w-100 mt-4 pt-2">
                             @csrf
-
-
 
                             <!-- MOBILE NUMBER -->
                             <div class="mb-4">

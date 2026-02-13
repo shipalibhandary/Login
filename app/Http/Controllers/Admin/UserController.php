@@ -29,6 +29,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'role_id' => 'required|exists:roles,id',
             'mobile' => 'nullable|string|max:10',
+            'status' => 'required|boolean',
         ]);
 
         User::create($data);
@@ -50,6 +51,7 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'role_id' => 'required|exists:roles,id',
+            'status' => 'required|boolean',
         ]);
 
         $user->update($data);
@@ -58,6 +60,23 @@ class UserController extends Controller
             ->route('admin.users.index')
             ->with('success', 'User updated successfully.');
     }
+    public function deleted()
+{
+    $users = User::onlyTrashed()->latest()->paginate(10);
+    return view('admin.users.deleted', compact('users'));
+}
+    public function restore($id)
+{
+    User::withTrashed()->findOrFail($id)->restore();
+
+    return redirect()->back()->with('success', 'User restored successfully');
+}
+    public function forceDelete($id)
+{
+    User::withTrashed()->findOrFail($id)->forceDelete();
+
+    return redirect()->back()->with('success', 'User permanently deleted');
+}
 
     public function destroy(User $user)
     {

@@ -21,9 +21,14 @@
 
             {{-- RIGHT: Add Role, pushed to right-most --}}
             <div class="ms-auto">
+                <div class="d-flex gap-2">
                 <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
                     <i class="feather-plus me-1"></i> Add Role
                 </a>
+                <a href="{{ route('admin.roles.deleted') }}" class="btn btn-danger">
+                    Deleted Records
+                </a></div>
+
             </div>
         </div>
     </div>
@@ -66,7 +71,7 @@
                                             {{-- Edit --}}
                                             <a href="{{ route('admin.roles.edit', $role->id) }}"
                                                 class="btn btn-outline-primary btn-icon rounded-circle">
-                                                <i class="feather-edit-2"></i>
+                                                <i class="feather-edit-2"></i>  
                                             </a>
 
                                             {{-- Delete --}}

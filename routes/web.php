@@ -6,12 +6,27 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('users', UserController::class);
-    Route::resource('roles', RoleController::class);
+Route::resource('roles', RoleController::class)->except(['show']);
+Route::resource('users', UserController::class)->except(['show']);
+
     Route::get('dashboard', function () {
         
         return view('admin.dashboard.index', ['title' => 'Admin Dashboard']);
     })->name('dashboard');
+
+    Route::get('roles/deleted', [RoleController::class, 'deleted'])
+        ->name('roles.deleted');
+    Route::put('roles/restore/{id}', [RoleController::class, 'restore'])
+        ->name('roles.restore');
+    Route::delete('roles/force-delete/{id}', [RoleController::class, 'forceDelete'])
+        ->name('roles.forceDelete');
+    Route::get('users/deleted', [UserController::class, 'deleted'])
+    ->name('users.deleted');
+    Route::put('users/restore/{id}', [UserController::class, 'restore'])
+    ->name('users.restore');
+    Route::delete('users/force-delete/{id}', [UserController::class, 'forceDelete'])
+    ->name('users.forceDelete');
+
 });
 
 Route::view('/', 'auth.login')->name('login');

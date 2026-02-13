@@ -18,9 +18,13 @@
         </div>
 
         <div class="ms-auto">
+            <div class="d-flex gap-2">
             <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
                 <i class="feather-user-plus me-1"></i> Add User
             </a>
+            <a href="{{ route('admin.users.deleted') }}" class="btn btn-danger">
+                    Deleted Records
+            </a></div>
         </div>
     </div>
 

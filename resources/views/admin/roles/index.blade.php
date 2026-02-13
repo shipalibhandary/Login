@@ -34,6 +34,10 @@
                 <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
                     <i class="feather-plus me-1"></i> Add Role
                 </a>
+                <a href="{{ route('admin.roles.deleted') }}" class="btn btn-danger">
+                    Deleted Records
+                </a></div>
+
             </div>
         </div>
     </div>

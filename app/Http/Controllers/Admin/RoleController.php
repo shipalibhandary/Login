@@ -73,6 +73,23 @@ class RoleController extends Controller
             ->route('admin.roles.index')
             ->with('success', 'Role updated successfully');
     }
+    public function deleted()
+{
+    $roles = Role::onlyTrashed()->latest()->paginate(10);
+    return view('admin.roles.deleted', compact('roles'));
+}
+public function restore($id)
+{
+    Role::withTrashed()->findOrFail($id)->restore();
+
+    return redirect()->back()->with('success', 'Role restored successfully');
+}
+public function forceDelete($id)
+{
+    Role::withTrashed()->findOrFail($id)->forceDelete();
+
+    return redirect()->back()->with('success', 'Role permanently deleted');
+}
 
     /**
      * Restore a soft-deleted role.

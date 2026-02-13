@@ -32,8 +32,8 @@ Route::prefix('admin')
         |------------------------------------------------------------------
         | User soft-delete routes
         |------------------------------------------------------------------
-        | These handle the "Deleted Users" list and restoring soft-deleted
-        | users. They must come before the resource routes.
+        | These handle the "Deleted Users" list, restoring, and force delete.
+        | They must come before the resource routes.
         */
         Route::get('users/deleted', [UserController::class, 'deleted'])
             ->name('users.deleted');
@@ -41,18 +41,23 @@ Route::prefix('admin')
         Route::post('users/{id}/restore', [UserController::class, 'restore'])
             ->name('users.restore');
 
+        Route::delete('users/{id}/force-delete', [UserController::class, 'forceDelete'])
+            ->name('users.forceDelete');
+
         /*
         |------------------------------------------------------------------
         | Role soft-delete routes
         |------------------------------------------------------------------
-        | These handle the "Deleted Roles" list and restoring soft-deleted
-        | roles.
+        | These handle the "Deleted Roles" list, restoring, and force delete.
         */
         Route::get('roles/deleted', [RoleController::class, 'deleted'])
             ->name('roles.deleted');
 
         Route::post('roles/{id}/restore', [RoleController::class, 'restore'])
             ->name('roles.restore');
+
+        Route::delete('roles/{id}/force-delete', [RoleController::class, 'forceDelete'])
+            ->name('roles.forceDelete');
 
         /*
         |------------------------------------------------------------------

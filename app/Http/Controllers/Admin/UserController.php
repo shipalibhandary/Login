@@ -60,33 +60,10 @@ class UserController extends Controller
             ->route('admin.users.index')
             ->with('success', 'User updated successfully.');
     }
-    public function deleted()
-{
-    $users = User::onlyTrashed()->latest()->paginate(10);
-    return view('admin.users.deleted', compact('users'));
-}
-    public function restore($id)
-{
-    User::withTrashed()->findOrFail($id)->restore();
 
-    return redirect()->back()->with('success', 'User restored successfully');
-}
-    public function forceDelete($id)
-{
-    User::withTrashed()->findOrFail($id)->forceDelete();
-
-    return redirect()->back()->with('success', 'User permanently deleted');
-}
-
-    public function destroy(User $user)
-    {
-        $user->delete();
-
-        return redirect()
-            ->route('admin.users.index')
-            ->with('success', 'User deleted successfully.');
-    }
-
+    /**
+     * Show soft-deleted users.
+     */
     public function deleted()
     {
         $users = User::onlyTrashed()
@@ -94,15 +71,42 @@ class UserController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.deleted', compact('users'));
     }
 
+    /**
+     * Restore a soft-deleted user.
+     */
     public function restore($id)
     {
         User::withTrashed()->where('id', $id)->restore();
 
         return redirect()
             ->route('admin.users.deleted')
-            ->with('success', 'User Restored Successfully.');
+            ->with('success', 'User restored successfully.');
+    }
+
+    /**
+     * Permanently delete a soft-deleted user.
+     */
+    public function forceDelete($id)
+    {
+        User::withTrashed()->findOrFail($id)->forceDelete();
+
+        return redirect()
+            ->back()
+            ->with('success', 'User permanently deleted.');
+    }
+
+    /**
+     * Soft delete user.
+     */
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User deleted successfully.');
     }
 }

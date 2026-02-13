@@ -26,7 +26,7 @@ class RoleController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.roles.index', compact('roles'));
+        return view('admin.roles.deleted', compact('roles'));
     }
 
     public function create()
@@ -73,23 +73,18 @@ class RoleController extends Controller
             ->route('admin.roles.index')
             ->with('success', 'Role updated successfully');
     }
-    public function deleted()
-{
-    $roles = Role::onlyTrashed()->latest()->paginate(10);
-    return view('admin.roles.deleted', compact('roles'));
-}
-public function restore($id)
-{
-    Role::withTrashed()->findOrFail($id)->restore();
 
-    return redirect()->back()->with('success', 'Role restored successfully');
-}
-public function forceDelete($id)
-{
-    Role::withTrashed()->findOrFail($id)->forceDelete();
+    /**
+     * Soft delete a role.
+     */
+    public function destroy(Role $role)
+    {
+        $role->delete(); // soft delete
 
-    return redirect()->back()->with('success', 'Role permanently deleted');
-}
+        return redirect()
+            ->route('admin.roles.index')
+            ->with('success', 'Role deleted successfully.');
+    }
 
     /**
      * Restore a soft-deleted role.
@@ -103,12 +98,15 @@ public function forceDelete($id)
             ->with('success', 'Role restored successfully.');
     }
 
-    public function destroy(Role $role)
+    /**
+     * Permanently delete a soft-deleted role.
+     */
+    public function forceDelete($id)
     {
-        $role->delete(); // soft delete
+        Role::withTrashed()->findOrFail($id)->forceDelete();
 
         return redirect()
-            ->route('admin.roles.index')
-            ->with('success', 'Role deleted successfully.');
+            ->back()
+            ->with('success', 'Role permanently deleted');
     }
 }

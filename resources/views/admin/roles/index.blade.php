@@ -19,7 +19,7 @@
                 </ul>
             </div>
 
-            {{-- RIGHT: Deleted/Active toggle + Add Role --}}
+            {{-- RIGHT: Deleted/Active toggle + Add Role (no duplicate button) --}}
             <div class="ms-auto d-flex gap-2">
                 @if (request()->routeIs('admin.roles.deleted'))
                     <a href="{{ route('admin.roles.index') }}" class="btn btn-outline-secondary">
@@ -34,10 +34,6 @@
                 <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
                     <i class="feather-plus me-1"></i> Add Role
                 </a>
-                <a href="{{ route('admin.roles.deleted') }}" class="btn btn-danger">
-                    Deleted Records
-                </a></div>
-
             </div>
         </div>
     </div>
@@ -65,7 +61,7 @@
                         <tbody>
                             @foreach ($roles as $index => $role)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $roles->firstItem() ? $roles->firstItem() + $index : $index + 1 }}</td>
                                     <td>{{ $role->name }}</td>
                                     <td>{{ $role->description ?? '-' }}</td>
                                     <td>
@@ -78,7 +74,7 @@
                                     <td class="text-end">
                                         <div class="d-flex justify-content-end gap-2">
                                             @if (request()->routeIs('admin.roles.deleted'))
-                                                {{-- Restore --}}
+                                                {{-- Restore on deleted page --}}
                                                 <form action="{{ route('admin.roles.restore', $role->id) }}" method="POST"
                                                     onsubmit="return confirm('Restore this role?')">
                                                     @csrf
@@ -87,8 +83,19 @@
                                                         <i class="feather-rotate-ccw"></i>
                                                     </button>
                                                 </form>
+
+                                                {{-- Force Delete --}}
+                                                <form action="{{ route('admin.roles.forceDelete', $role->id) }}" method="POST"
+                                                    onsubmit="return confirm('Permanently delete this role?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-outline-danger btn-icon rounded-circle"
+                                                        title="Delete Permanently">
+                                                        <i class="feather-trash-2"></i>
+                                                    </button>
+                                                </form>
                                             @else
-                                                {{-- Edit --}}
+                                                {{-- Edit on active page --}}
                                                 <a href="{{ route('admin.roles.edit', $role->id) }}"
                                                     class="btn btn-outline-primary btn-icon rounded-circle" title="Edit">
                                                     <i class="feather-edit-2"></i>
@@ -111,6 +118,10 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+
+                <div class="mt-3">
+                    {{ $roles->links() }}
                 </div>
             @else
                 <p class="mb-0">No roles found.</p>

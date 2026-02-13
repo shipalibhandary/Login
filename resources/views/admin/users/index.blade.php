@@ -19,7 +19,7 @@
                 </ul>
             </div>
 
-            {{-- RIGHT: Deleted/Active toggle + Add User, same size as roles --}}
+            {{-- RIGHT: Deleted/Active toggle + Add User --}}
             <div class="ms-auto d-flex gap-2">
                 @if (request()->routeIs('admin.users.deleted'))
                     <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
@@ -37,7 +37,6 @@
             </div>
         </div>
     </div>
-
 
     @if (session('success'))
         <div class="alert alert-success mb-3">
@@ -75,7 +74,7 @@
                                     <td class="text-end">
                                         <div class="d-flex justify-content-end gap-2">
                                             @if (request()->routeIs('admin.users.deleted'))
-                                                {{-- Restore button shown on deleted list --}}
+                                                {{-- Restore (on deleted page) --}}
                                                 <form action="{{ route('admin.users.restore', $user->id) }}" method="POST"
                                                     onsubmit="return confirm('Restore this user?')">
                                                     @csrf
@@ -84,8 +83,19 @@
                                                         <i class="feather-rotate-ccw"></i>
                                                     </button>
                                                 </form>
+
+                                                {{-- Force Delete --}}
+                                                <form action="{{ route('admin.users.forceDelete', $user->id) }}" method="POST"
+                                                    onsubmit="return confirm('Permanently delete this user?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-outline-danger btn-icon rounded-circle"
+                                                        title="Delete Permanently">
+                                                        <i class="feather-trash-2"></i>
+                                                    </button>
+                                                </form>
                                             @else
-                                                {{-- Edit --}}
+                                                {{-- Edit (on active page) --}}
                                                 <a href="{{ route('admin.users.edit', $user->id) }}"
                                                     class="btn btn-outline-secondary btn-icon rounded-circle" title="Edit">
                                                     <i class="feather-edit-2"></i>

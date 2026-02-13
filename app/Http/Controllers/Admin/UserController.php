@@ -2,66 +2,69 @@
 
 namespace App\Http\Controllers\Admin;
 
-
-use App\Models\User;
+use App\Http\Controllers\Controller;
 use App\Models\Role;
-use App\Http\Controllers\Controller; 
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('role')->latest()->get();
+        $users = User::with('role')->latest()->paginate(10);
+
         return view('admin.users.index', compact('users'));
     }
 
     public function create()
     {
-        $roles = Role::where('status', 1)->get();
+        $roles = Role::where('status', true)->get();
+
         return view('admin.users.create', compact('roles'));
     }
 
     public function store(Request $request)
     {
-         $request->validate([
-        'name' => 'required',
-        'mobile' => 'required|unique:users',
-        'role_id' => 'required',
-        'mpin' => 'required|min:4'
-    ]);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'role_id' => 'required|exists:roles,id',
+            'mobile' => 'nullable|string|max:10',
+        ]);
 
-       User::create([
-        'name' => $request->name,
-        'mobile' => $request->mobile,
-        'role_id' => $request->role_id,
-        'mpin' => Hash::make($request->mpin),
-    ]);
+        User::create($data);
 
-        return redirect()->route('users.index')
-            ->with('success', 'User created successfully');
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User created successfully.');
     }
-    public function edit($id)
-{
-    $user = User::findOrFail($id);
-    return view('admin.users.edit', compact('user'));
-}
 
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'mobile' => 'required|digits:10|unique:users,mobile,' . $id,
-        'role' => 'required|in:admin,user',
-        'status' => 'required|boolean'
-    ]);
+    public function edit(User $user)
+    {
+        $roles = Role::where('status', true)->get();
 
-    $user = User::findOrFail($id);
-    $user->update($request->only('name', 'mobile', 'role', 'status'));
+        return view('admin.users.edit', compact('user', 'roles'));
+    }
 
-    return redirect()->route('users.index')->with('success', 'User updated successfully!');
-}
+    public function update(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'role_id' => 'required|exists:roles,id',
+        ]);
 
+        $user->update($data);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User updated successfully.');
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User deleted successfully.');
+    }
 }

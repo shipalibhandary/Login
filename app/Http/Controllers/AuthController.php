@@ -8,15 +8,16 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-         return redirect()->route('dashboard')
-        ->with('success', 'Login successful');
-}
+        
+        return redirect()->route('admin.dashboard')
+            ->with('success', 'Login successful');
+    }
     public function sendOtp(Request $request)
     {
         return redirect()->route('otp.form')
-    ->with('success', 'OTP sent successfully');
+            ->with('success', 'OTP sent successfully');
     }
-    
+
 
     public function verifyOtp(Request $request)
     {
@@ -32,6 +33,6 @@ class AuthController extends Controller
     public function storeMpin(Request $request)
     {
         return redirect()->route('dashboard')
-        ->with('success', 'MPIN set successfully');
+            ->with('success', 'MPIN set successfully');
     }
-    }
+}

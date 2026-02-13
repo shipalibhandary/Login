@@ -7,26 +7,34 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-
-
 class User extends Authenticatable
 {
-    use SoftDeletes;
-    
-    
+    use HasFactory, SoftDeletes;
+
+    public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
         'id',
+        'role_id',
+        'name',
         'mobile',
         'mpin',
-        'role_id',
-        'status'
+        'status',
+        'password',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function ($model) {
+            if (!$model->id) {
+                $model->id = (string) Str::uuid();
+            }
+        });
+    }
 
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
 }
-

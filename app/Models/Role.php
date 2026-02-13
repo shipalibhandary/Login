@@ -3,20 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Role extends Model
 {
-    use HasUuids, SoftDeletes;
+    use SoftDeletes;
 
-    protected $keyType = 'string';
     public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
+        'id',
         'name',
         'description',
-        'status'
+        'status',
     ];
 
     public function users()

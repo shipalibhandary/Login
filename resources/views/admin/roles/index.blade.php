@@ -1,87 +1,94 @@
-@extends('layouts.app') {{-- or your main dashboard layout --}}
+@extends('layouts.admin')
+
+@section('page-title', 'Roles')
+@section('title', 'Roles')
 
 @section('content')
+    <div class="page-header mb-4">
+        <div class="d-flex align-items-center w-100">
+            {{-- LEFT: title + breadcrumb (e.g. Roles Dashboard > Roles) --}}
+            <div class="page-header-title">
+                <h5 class="m-b-10 mb-1">
+                    <i class="feather-shield me-2"></i>Roles
+                </h5>
+                <ul class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item">Roles</li>
+                </ul>
+            </div>
 
-<div class="container-fluid">
-
-    {{-- Page Header --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="mb-0">Roles Management</h4>
-        <a href="{{ route('roles.create') }}" class="btn btn-primary">
-            + Add Role
-        </a>
+            {{-- RIGHT: Add Role, pushed to right-most --}}
+            <div class="ms-auto">
+                <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
+                    <i class="feather-plus me-1"></i> Add Role
+                </a>
+            </div>
+        </div>
     </div>
 
-    {{-- Success Message --}}
     @if(session('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success mb-3">
             {{ session('success') }}
         </div>
     @endif
 
-    {{-- Roles Table --}}
-    <div class="card">
+    <div class="card stretch stretch-full">
         <div class="card-body">
-
-            <div class="table-responsive">
-                <table class="table table-bordered align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Role Name</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th width="150">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @forelse($roles as $role)
+            @if($roles->count())
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $role->name }}</td>
-                                <td>{{ $role->description ?? '-' }}</td>
-                                <td>
-                                    @if($role->status == 1)
-                                        <span class="badge bg-success">Active</span>
-                                    @else
-                                        <span class="badge bg-danger">Inactive</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <a href="{{ route('roles.edit', $role->id) }}"
-                                       class="btn btn-sm btn-warning">
-                                        Edit
-                                    </a>
-
-                                    <form action="{{ route('roles.destroy', $role->id) }}"
-                                          method="POST"
-                                          style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Are you sure?')">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </td>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($roles as $index => $role)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $role->name }}</td>
+                                    <td>{{ $role->description ?? '-' }}</td>
+                                    <td>
+                                        @if($role->status)
+                                            <span class="badge bg-success">Active</span>
+                                        @else
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            {{-- Edit --}}
+                                            <a href="{{ route('admin.roles.edit', $role->id) }}"
+                                                class="btn btn-outline-primary btn-icon rounded-circle">
+                                                <i class="feather-edit-2"></i>
+                                            </a>
 
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center">
-                                    No roles found.
-                                </td>
-                            </tr>
-                        @endforelse
+                                            {{-- Delete --}}
+                                            <form action="{{ route('admin.roles.destroy', $role->id) }}" method="POST"
+                                                onsubmit="return confirm('Delete this role?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-outline-danger btn-icon rounded-circle">
+                                                    <i class="feather-trash-2"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
 
-                    </tbody>
-                </table>
-            </div>
-
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p class="mb-0">No roles found.</p>
+            @endif
         </div>
     </div>
-
-</div>
-
 @endsection

@@ -87,16 +87,19 @@
                     </a>
                     <ul class="nxl-submenu">
                         <li class="nxl-item">
-                            <a href="#" class="nxl-link">System Settings</a>
+                            <a href="{{ route('admin.financial-years.index') }}" class="nxl-link">
+                                Financial Years
+                            </a>
                         </li>
                         <li class="nxl-item">
-                            <a href="#" class="nxl-link">Activity Logs</a>
+                            <a href="{{ route('admin.financial-years.mapping') }}" class="nxl-link">
+                                FY–Hospital Mapping
+                            </a>
                         </li>
-                        <li class="nxl-item">
-                            <a href="{{ route('admin.financial-years.index') }}" class="nxl-link" >Financial Years</a>
-                        </li>
+                        {{-- existing System Settings / Activity Logs, etc. --}}
                     </ul>
                 </li>
+
 
                 {{-- Section: Account --}}
                 <li class="nxl-item nxl-caption">

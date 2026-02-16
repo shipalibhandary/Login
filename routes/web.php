@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\FinancialYearController;
+use App\Http\Controllers\Admin\FinancialYearMappingController;
 use App\Http\Controllers\Auth\SignInController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
@@ -33,16 +34,20 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         // Dashboard
         Route::view('dashboard', 'admin.dashboard.index')->name('dashboard');
-        
+
         // Financial Years
         Route::get('financial-years', [FinancialYearController::class, 'index'])
             ->name('financial-years.index');
-
         Route::get('financial-years/create', [FinancialYearController::class, 'create'])
             ->name('financial-years.create');
-
         Route::post('financial-years', [FinancialYearController::class, 'store'])
             ->name('financial-years.store');
+
+        // FY-Mapping
+        Route::get('financial-years/mapping', [FinancialYearMappingController::class, 'index'])
+            ->name('financial-years.mapping');
+        Route::post('financial-years/mapping', [FinancialYearMappingController::class, 'store'])
+            ->name('financial-years.mapping.store');
 
         // User Management
         Route::get('users/deleted', [UserController::class, 'displayDeletedUser'])->name('users.deleted');

@@ -27,4 +27,12 @@ class FinancialYear extends Model
         return $query->where('start_date', '<=', $date)
             ->where('end_date', '>=', $date);
     }
+
+    public function hospitals()
+    {
+        return $this->belongsToMany(Hospital::class, 'hospital_financial_years')
+            ->withPivot(['is_current', 'locked'])
+            ->withTimestamps();
+    }
+
 }
